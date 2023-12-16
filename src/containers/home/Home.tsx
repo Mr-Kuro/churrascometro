@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { InputGroup } from "../../components/input/InputGroup";
+import { InputGroup } from "../../components/inputBox/InputGroup";
 import {
   ResultadosType,
   ResultsContext,
@@ -8,7 +8,7 @@ import {
   TCalculoTable,
 } from "../../context/ResultsContext.provider";
 import "./Home.css";
-import { LinkedButton } from "../../components/input/LinkedButton";
+import { LinkedButton } from "../../components/LinkedButton";
 
 export enum TipoDeConsumidor {
   mens = "homens",

@@ -5,6 +5,13 @@ import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Results } from "./containers/results/Results.tsx";
 import { Home } from "./containers/home/Home.tsx";
+import { FormData } from "./containers/form/FormData.tsx";
+import { LinkedButton } from "./components/LinkedButton.tsx";
+
+const componentDeInicio = () => {
+  const data = localStorage.getItem("data");
+  return data ? <Home /> : <FormData />;
+};
 
 const router = createBrowserRouter([
   {
@@ -13,14 +20,29 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: componentDeInicio(),
       },
       {
         path: "/results",
         element: <Results />,
       },
+      {
+        path: "/settings",
+        element: <FormData />,
+      },
     ],
-    errorElement: <h1 className="errorPage">404<br/>Page not found</h1>,
+    errorElement: (
+      <div>
+        <h1 className="errorPage">
+          404
+          <br />
+          Page not found
+        </h1>
+        <div style={{ textAlign: "center"}}>
+          <LinkedButton title="Voltar" path="/" />
+        </div>
+      </div>
+    ),
   },
 ]);
 

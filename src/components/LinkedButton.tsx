@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../../containers/home/Home.css";
+import "../containers/home/Home.css";
 
 type LinkedButtonProps = {
   title: string;

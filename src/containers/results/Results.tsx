@@ -1,7 +1,7 @@
 import { ResultsContext } from "../../context/ResultsContext.provider";
 import { useContext } from "react";
 import { TipoDeItem } from "../home/Home";
-import { LinkedButton } from "../../components/input/LinkedButton";
+import { LinkedButton } from "../../components/LinkedButton";
 
 type ResultsRederer = {
   nome: string;

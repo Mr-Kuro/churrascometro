@@ -7,6 +7,7 @@
   padding: 20px;
   border-radius: 10px;
   text-align: center;
+  
 }
 
 .row {
@@ -145,7 +146,6 @@ form {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  height: 250px;
 }
 
 #header-form {

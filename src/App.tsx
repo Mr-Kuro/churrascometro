@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 import "./App.css";
 import { ResultsProvider } from "./context/ResultsContext.provider";
@@ -35,11 +35,25 @@ function App() {
   return (
     <div className={themeValue}>
       <div className="theme-container">
-        <label id="label-theme-text">Tema Escuro</label>
-        <label className="switch">
-          <input type="checkbox" id="input-theme" onClick={handleThemeChange} />
-          <span className="slider"></span>
-        </label>
+        <div
+          className="row_display"
+        >
+          <div className="settings_container">
+            <Link to="/settings">Update Settings</Link>
+          </div>
+        </div>
+
+        <div>
+          <label id="label-theme-text">Tema Escuro</label>
+          <label className="switch">
+            <input
+              type="checkbox"
+              id="input-theme"
+              onClick={handleThemeChange}
+            />
+            <span className="slider"></span>
+          </label>
+        </div>
       </div>
       <ResultsProvider>
         <Outlet />
