@@ -48,7 +48,7 @@ export type TConvidados = TConsumidor & { total: number };
   tipo de resultados, para o context
 */
 export type ResultadosType = {
-  consumoTotal: string;
+  consumoTotal: number;
   convidados: TConvidados;
   consumoPorItem: TConsumoTable;
 };
@@ -63,23 +63,25 @@ export type ResultsContextValue = {
 };
 
 /* 
-  cria o context com os valores defalts iniciais e exporta. o tipo é o ResultsContextValue
+  cria o context com os valores defaults iniciais e exporta. o tipo é o ResultsContextValue
 */
-export const ResultsContext = createContext<ResultsContextValue>(
-  {
-    resultados: {
-      consumoTotal: "0.0 kg",
-      convidados: {
-        homens: 1,
-        mulheres: 0,
-        criancas: 0,
-        total: 1,
-      },
-      consumoPorItem: {},
+export const ResultsContext = createContext<ResultsContextValue>({
+  resultados: {
+    consumoTotal: 0,
+    convidados: { homens: 1, mulheres: 0, criancas: 0, total: 1 },
+    consumoPorItem: {
+      meat: { homens: 3, mulheres: 0, criancas: 0 },
+      bread: { homens: 2, mulheres: 0, criancas: 0 },
+      beer: { homens: 10, mulheres: 0, criancas: 0 },
+      soda: { homens: 2, mulheres: 0, criancas: 0 },
+      water: { homens: 0.3, mulheres: 0, criancas: 0 },
+      coal: { homens: 1, mulheres: 0, criancas: 0 },
+      salt: { homens: 0.5, mulheres: 0, criancas: 0 },
+      ice: { homens: 1, mulheres: 0, criancas: 0 },
     },
-    changeResulados: () => {},
-  }
-);
+  },
+  changeResulados: () => {},
+});
 
 export const ResultsProvider = ({
   children,
@@ -94,7 +96,6 @@ export const ResultsProvider = ({
     setResultados(resultados);
   };
 
-  createContext(resultados);
   return (
     <ResultsContext.Provider value={{ resultados, changeResulados }}>
       {children}

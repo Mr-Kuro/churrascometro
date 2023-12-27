@@ -27,55 +27,55 @@ export enum TipoDeItem {
   ice = "Gelo",
 }
 
-const defaltDuracao = 1;
-
-const consumidoresDaTabelaConsumo: TConsumoTable = {
-  meat: {
-    homens: 3,
-    mulheres: 2,
-    criancas: 0.5,
-  },
-  bread: {
-    homens: 2,
-    mulheres: .3,
-    criancas: .1,
-  },
-  beer: {
-    homens: 10,
-    mulheres: 6,
-    criancas: 0,
-  },
-  soda: {
-    homens: 2,
-    mulheres: 2,
-    criancas: 0.5,
-  },
-  water: {
-    homens: .3,
-    mulheres: .2,
-    criancas: 0.5,
-  },
-  coal: {
-    homens: 1,
-    mulheres: 1,
-    criancas: 0,
-  },
-  salt: {
-    homens: .5,
-    mulheres: .3,
-    criancas: .1,
-  },
-  ice: {
-    homens: 1,
-    mulheres: 1,
-    criancas: 0,
+const TabelaDeCalculoChumbada: TCalculoTable = {
+  duracao: 1,
+  consumo: {
+    meat: {
+      homens: 0.8,
+      mulheres: 0.4,
+      criancas: 0.2,
+    },
+    bread: {
+      homens: 2,
+      mulheres: 0.3,
+      criancas: 0.1,
+    },
+    beer: {
+      homens: 10,
+      mulheres: 6,
+      criancas: 0,
+    },
+    soda: {
+      homens: 2,
+      mulheres: 2,
+      criancas: 0.5,
+    },
+    water: {
+      homens: 0.3,
+      mulheres: 0.2,
+      criancas: 0.5,
+    },
+    coal: {
+      homens: 1,
+      mulheres: 1,
+      criancas: 0,
+    },
+    salt: {
+      homens: 0.5,
+      mulheres: 0.3,
+      criancas: 0.1,
+    },
+    ice: {
+      homens: 1,
+      mulheres: 1,
+      criancas: 0,
+    },
   },
 };
 
 export const Home = () => {
   const [tabelaDeCalculo, setTabelaDeCalculo] = useState<TCalculoTable>({
-    duracao: defaltDuracao,
-    consumo: consumidoresDaTabelaConsumo,
+    ...TabelaDeCalculoChumbada,
   });
   const [numeroDeConvidados, setNumeroDeConvidados] = useState<TConvidados>({
     homens: 0,
@@ -86,25 +86,28 @@ export const Home = () => {
 
   const { changeResulados } = useContext(ResultsContext);
 
-  const preencherTabelaDeCalculo = (itemsConsumidos: TConsumoTable) => {
-    const duracao = defaltDuracao;
+  // seta os valores de consumo por tipo pessoa para cada item de consumo e passa para a tabelaDeCalculo
+  const preencherTabelaDeCalculo = (
+    itemsConsumidos: TConsumoTable,
+    duracao: number = 1
+  ) => {
     const consumo = itemsConsumidos;
-
     setTabelaDeCalculo({ duracao, consumo });
   };
 
   // lida com os calculos de consumoTotal e convidados e retorna um objeto com os resultados para o context usando o changeResultados
-  const handleCalculo = (numeroDeConvidados: TConvidados) => {
+  const handleCalculo = ({ criancas, homens, mulheres }: TConvidados) => {
     // pega a quantidade de convidados do parametro para usar nas funções de calculo
-    const { criancas, homens, mulheres } = numeroDeConvidados;
 
-    // seta os valores de consumo por tipo pessoa para cada item de consumo e passa para a tabelaDeCalculo
-    preencherTabelaDeCalculo(consumidoresDaTabelaConsumo);
+    // esta função não é necessária, apesar  da tabelaDeCalculo ser estática, mas futuramente pode ser usada para alterar a tabela de calculo a partir de um input do usuário
+    preencherTabelaDeCalculo(TabelaDeCalculoChumbada.consumo);
+
     // pega os valores de duracao e consumo da tabelaDeCalculo
     const { duracao, consumo } = tabelaDeCalculo;
     // pega os valores de consumo de cada item de consumo
-    
-    // calcula o consumo total a partir da tabelaDeCalculo e retorna uma string com o valor formatado para o context
+
+    // assume que os valores de consumo são valores de consumo por hora em dinheiro, e multiplica pela duração do churrasco
+    // essa função não é necessária, mas futuramente pode ser para calculo de gastos em dinheiro
     const calcConsumoTotal = () => {
       const totalConsumo =
         Object.values(consumo)
@@ -117,12 +120,7 @@ export const Home = () => {
           })
           .reduce((acc, cur) => acc + cur) * duracao;
 
-      const totalConsumoFormatado = totalConsumo.toLocaleString("pt-br", {
-        style: "currency",
-        currency: "BRL",
-      });
-
-      return totalConsumoFormatado;
+      return totalConsumo;
     };
 
     // calcula o consumo por item a partir da tabelaDeCalculo e retorna um objeto com os valores formatados para o context
@@ -131,15 +129,17 @@ export const Home = () => {
 
       Object.keys(consumo).forEach((itemDeConsumo) => {
         const homensConsumo = homens * consumo[itemDeConsumo].homens * duracao;
-        const mulheresConsumo = mulheres * consumo[itemDeConsumo].mulheres * duracao;
-        const criancasConsumo = criancas * consumo[itemDeConsumo].criancas * duracao;
-
+        const mulheresConsumo =
+          mulheres * consumo[itemDeConsumo].mulheres * duracao;
+        const criancasConsumo =
+          criancas * consumo[itemDeConsumo].criancas * duracao;
         consumoPorItem[itemDeConsumo] = {
           homens: homensConsumo,
           mulheres: mulheresConsumo,
           criancas: criancasConsumo,
         };
       });
+
       return consumoPorItem;
     };
 
@@ -208,7 +208,11 @@ export const Home = () => {
             <p id="no-input" style={{ visibility: "hidden" }}>
               Por favor, selecione a quantidade de pessoas!
             </p>
-            <LinkedButton title="Calcular" path="/results" callback={() => handleCalculo(numeroDeConvidados)} />
+            <LinkedButton
+              title="Calcular"
+              path="/results"
+              callback={() => handleCalculo(numeroDeConvidados)}
+            />
           </div>
         </div>
       </div>

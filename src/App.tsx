@@ -26,6 +26,7 @@ function App() {
   const handleThemeChange = () => {
     setTheme(whaIsTheme);
     localStorage.setItem("theme", whaIsTheme);
+    localStorage.getItem("theme");
   };
 
   useEffect(() => {

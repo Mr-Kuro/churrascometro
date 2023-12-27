@@ -11,19 +11,26 @@ type ResultsRederer = {
 
 export const Results = () => {
   const { resultados } = useContext(ResultsContext);
-  const { consumoPorItem, convidados } = resultados;
+  const { consumoPorItem, convidados, consumoTotal } = resultados;
   // console.log(`consumo: ${consumoPorItem}, convidados: ${convidados}`); // apenas para debug no console
 
   const renderResults = ({ nome, grandeza, quantidade }: ResultsRederer) => {
+    let quantidadeKG: undefined | string;
+    if (grandeza === "kg") {
+      quantidadeKG = quantidade.toFixed(2);
+    }
+
     return (
       <li>
         <strong>{nome}</strong>
         <span>
-          {quantidade} {grandeza}
+          {quantidadeKG ? quantidadeKG : quantidade} {grandeza}
         </span>
       </li>
     );
   };
+
+  console.log(JSON.stringify(resultados));
 
   const grandezas = {
     meat: "kg",
@@ -43,7 +50,13 @@ export const Results = () => {
         <div>
           <div className="result-total-guest">
             <p>Confira a lista para o seu churrasco!</p>
-            <p id="total-guest">{convidados.total} convidados</p>
+            <div id="total-guest">
+              {convidados.total} convidados
+              <p style={{ fontSize: "1rem" }}>
+                {" "}
+                Consumo total: R${consumoTotal.toFixed(2)}
+              </p>
+            </div>
             <span className="guest-list">{convidados.homens} homens</span>
             <span className="guest-list">{convidados.mulheres} mulheres</span>
             <span className="guest-list">{convidados.criancas} crianças</span>
@@ -69,7 +82,7 @@ export const Results = () => {
         </div>
         <div className="row">
           <div>
-            <LinkedButton path="/" title="Novo Calculo" callback={()=>{}} />
+            <LinkedButton path="/" title="Novo Calculo" callback={() => {}} />
           </div>
         </div>
       </div>
